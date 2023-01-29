@@ -27,5 +27,10 @@ setup(
         'mlserver-mlflow',
         'tenseal',
     ],
+    entry_points={
+        'console_scripts': [
+            'heflow-keygen = heflow.cli.keygen:command',
+        ],
+    },
     python_requires='>=3.8',
 )
