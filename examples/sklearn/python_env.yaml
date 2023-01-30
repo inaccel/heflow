@@ -1,0 +1,3 @@
+dependencies:
+- heflow
+python: "3.8"
