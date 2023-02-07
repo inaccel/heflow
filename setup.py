@@ -24,7 +24,7 @@ setup(
         'Linux',
     ],
     install_requires=[
-        'mlserver-mlflow',
+        'mlflow[extras]',
         'tenseal',
     ],
     entry_points={
