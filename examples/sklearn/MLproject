@@ -1,3 +1,10 @@
 entry_points:
   main:
-    command: python train.py
+    command: python train.py --C {C} --solver {solver} --max-iter {max_iter}
+    parameters:
+      C:
+        default: 1.0
+      solver:
+        default: lbfgs
+      max_iter:
+        default: 100
