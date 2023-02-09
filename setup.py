@@ -3,7 +3,8 @@ from setuptools import find_packages, setup
 setup(
     name='heflow',
     use_scm_version=True,
-    description='HEflow: A platform for the homomorphic encryption lifecycle',
+    description=
+    'HEflow: A platform for the privacy-preserving machine learning lifecycle',
     long_description_content_type='text/markdown',
     author='InAccel',
     author_email='info@inaccel.com',

@@ -1,3 +1,72 @@
-# HEflow
+# HEflow: A Privacy-Preserving Machine Learning Lifecycle Platform
+
+HEflow is a platform to streamline privacy-preserving machine learning
+development, including tracking experiments, packaging code into reproducible
+runs, and sharing and deploying encrypted models. Built on top of
+[MLflow](https://github.com/mlflow/mlflow),
+[Seldon MLServer](https://github.com/SeldonIO/MLServer) and
+[OpenMined TenSEAL](https://github.com/OpenMined/TenSEAL), HEflow offers a set
+of lightweight homomorphic encryption APIs that can be used with any existing
+machine learning application or library (scikit-learn, Keras, TensorFlow,
+PyTorch, etc), wherever you currently run ML code (e.g. in notebooks, standalone
+applications, or the cloud).
 
 [![PyPI version](https://badge.fury.io/py/heflow.svg)](https://badge.fury.io/py/heflow)
+
+## Homomorphic Encryption (HE)
+
+Homomorphic encryption differs from typical encryption methods in that it allows
+computation to be performed directly on encrypted data without requiring access
+to a secret key. The result of such a computation remains in encrypted form, and
+can at a later point be revealed by the owner of the secret key. This
+ground-breaking technology has enabled industry and government to provide
+never-before enabled capabilities for outsourced computation securely.
+
+Homomorphic encryption workflows, for privacy-preserving machine learning,
+involve three entities:
+
+1. an ML model owner,
+
+2. a cloud server that performs model inference on HE encrypted data using the
+pre-computed ML model, and
+
+3. a user who sends confidential data to the cloud for model inference.
+
+In all cases, the cloud should learn nothing about the underlying encrypted
+data.
+
+## What is HEflow?
+
+HEflow is an open source platform developed by InAccel to help manage the
+complete privacy-preserving machine learning lifecycle with enterprise
+reliability, security and scale. It tackles four primary functions:
+
+### Encrypted Model development
+
+Accelerate and simplify privacy-preserving machine learning lifecycle management
+with a standardized framework for developing production-ready PPML models. With
+HEflow, you can bootstrap PPML projects, perform rapid iteration with ease and
+ship high-quality encrypted models to production at scale.
+
+### Experiment tracking
+
+Run experiments with any ML library, framework or language, and automatically
+keep track of parameters, metrics, code and encrypted models from each
+experiment. By using HEflow, you can securely share, manage and compare
+experiment results along with corresponding artifacts and code versions.
+
+### Encrypted Model management
+
+Use one central place to discover and share PPML models, collaborate on moving
+them from experimentation to online testing and production, integrate with
+approval and governance workflows and CI/CD pipelines, and monitor PPML
+deployments and their performance. HEflow facilitates sharing of expertise and
+knowledge, and helps you stay in control.
+
+### Encrypted Model deployment
+
+Quickly deploy production encrypted models for batch inference or as
+[gRPC](https://github.com/grpc/grpc) homomorphic encryption APIs using built-in
+integration with Docker containers or
+[KServe](https://github.com/kserve/kserve). With HEflow, you can operationalize
+and monitor production encrypted models to scale based on the business needs.
