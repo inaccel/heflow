@@ -35,6 +35,42 @@ pre-computed ML model, and
 In all cases, the cloud should learn nothing about the underlying encrypted
 data.
 
+## Privacy-Preserving Machine Learning Operations (PPMLOps)
+
+PPMLOps is a set of processes and automated steps to manage code, data, and
+encrypted models. This section describes a typical PPMLOps workflow.
+
+![HEflow PPMLOps](assets/heflow-ppmlops.svg)
+*PPMLOps using HEflow*
+
+1. **Experiments**
+
+	Data scientists develop, train and tune the model on the production data,
+	then they encrypt &#9312; and register it with the Encrypted Model Registry.
+	Model quality is evaluated by testing on held-out production data. This
+	pipeline can be triggered by code changes or by automated retraining jobs.
+
+2. **Encrypted Model Registry**
+
+	Autologging saves a record of the training and evaluation process, which
+	includes model metrics, parameters, tags, and the encrypted model itself.
+	When training and hyperparameter tuning are complete, the data scientist
+	registers the final encrypted model artifact in the Encrypted Model Registry
+	for the production environment. This records a link between the encrypted
+	model and the code used to generate it.
+
+2. **Encrypted Model Serving**
+
+	A continuous deployment (CD) process takes new encrypted models and deploys
+	&#9313; them for low-latency online serving (APIs). Options include cloud
+	provider serving endpoints, or custom serving applications.
+
+2. **Invocations**
+
+	The serving system loads the Production encrypted model version from the
+	Encrypted Model Registry. For each request, it scores the encrypted data
+	&#9314;, and returns encrypted predictions &#9315;.
+
 ## What is HEflow?
 
 HEflow is an open source platform developed by InAccel to help manage the
