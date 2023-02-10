@@ -41,21 +41,21 @@ HEflow is an open source platform developed by InAccel to help manage the
 complete privacy-preserving machine learning lifecycle with enterprise
 reliability, security and scale. It tackles four primary functions:
 
-### Encrypted Model development
+### :hammer_and_wrench: Encrypted Model development
 
 Accelerate and simplify privacy-preserving machine learning lifecycle management
 with a standardized framework for developing production-ready PPML models. With
 HEflow, you can bootstrap PPML projects, perform rapid iteration with ease and
 ship high-quality encrypted models to production at scale.
 
-### Experiment tracking
+### :clipboard: Experiment tracking
 
 Run experiments with any ML library, framework or language, and automatically
 keep track of parameters, metrics, code and encrypted models from each
 experiment. By using HEflow, you can securely share, manage and compare
 experiment results along with corresponding artifacts and code versions.
 
-### Encrypted Model management
+### :jigsaw: Encrypted Model management
 
 Use one central place to discover and share PPML models, collaborate on moving
 them from experimentation to online testing and production, integrate with
@@ -63,10 +63,24 @@ approval and governance workflows and CI/CD pipelines, and monitor PPML
 deployments and their performance. HEflow facilitates sharing of expertise and
 knowledge, and helps you stay in control.
 
-### Encrypted Model deployment
+### :package: Encrypted Model deployment
 
 Quickly deploy production encrypted models for batch inference or as
 [gRPC](https://github.com/grpc/grpc) homomorphic encryption APIs using built-in
 integration with Docker containers or
 [KServe](https://github.com/kserve/kserve). With HEflow, you can operationalize
 and monitor production encrypted models to scale based on the business needs.
+
+## Installing
+
+Install HEflow from PyPI via `pip install heflow`
+
+## Official HEflow Docker Image
+
+The official HEflow Docker image is available on Docker Hub at
+https://hub.docker.com/r/inaccel/heflow.
+
+```sh
+# Pull the latest version
+docker pull inaccel/heflow
+```
