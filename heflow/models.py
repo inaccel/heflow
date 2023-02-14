@@ -1,4 +1,6 @@
+import functools
 import heflow.codecs
+import inspect
 import mlflow.pyfunc
 import mlflow.pyfunc.mlserver
 import mlserver.grpc.converters
@@ -8,12 +10,13 @@ import mlserver.grpc.dataplane_pb2_grpc
 def ckks_model(infer: str):
 
     def decorate(cls):
-        setattr(cls, '__call__', getattr(cls, infer))
+        setattr(cls, '__infer__', getattr(cls, infer))
 
         def connect(self, channel):
             setattr(self, 'channel', channel)
             return self
 
+        assert not hasattr(cls, 'connect')
         setattr(cls, 'connect', connect)
 
         def disconnect(self):
@@ -21,11 +24,16 @@ def ckks_model(infer: str):
                 delattr(self, 'channel')
             return self
 
+        assert not hasattr(cls, 'disconnect')
         setattr(cls, 'disconnect', disconnect)
 
-        def stub(self, *args):
+        @functools.wraps(cls.__infer__)
+        def stub(self, *args, **kwargs):
             if not hasattr(self, 'channel'):
-                return self(*args)
+                return self.__infer__(*args, **kwargs)
+
+            signature = inspect.signature(self.__infer__).bind(*args, **kwargs)
+            signature.apply_defaults()
 
             return heflow.codecs.CKKSTensorRequestCodec.decode_response(
                 mlserver.grpc.converters.ModelInferResponseConverter.to_types(
@@ -34,19 +42,12 @@ def ckks_model(infer: str):
                             mlserver.grpc.converters.
                             ModelInferRequestConverter.from_types(
                                 heflow.codecs.CKKSTensorRequestCodec.
-                                encode_request(args),
+                                encode_request(signature.args),
                                 model_name=mlflow.pyfunc.mlserver.
                                 MLServerDefaultModelName))))
 
         setattr(cls, infer, stub)
 
-        def predict(self, context, model_input):
-            if isinstance(model_input, tuple):
-                return self(*model_input)
-            else:
-                return self(model_input)
-
-        return type('CKKSModel', (cls, mlflow.pyfunc.PythonModel),
-                    {'predict': predict})
+        return cls
 
     return decorate
