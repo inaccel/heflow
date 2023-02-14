@@ -6,6 +6,11 @@ def README():
         return md.read()
 
 
+def requirements():
+    with open('requirements.txt') as txt:
+        return txt.read().splitlines()
+
+
 setup(
     name='heflow',
     use_scm_version=True,
@@ -31,10 +36,7 @@ setup(
     platforms=[
         'Linux',
     ],
-    install_requires=[
-        'mlflow[extras]',
-        'tenseal',
-    ],
+    install_requires=requirements(),
     entry_points={
         'console_scripts': [
             'heflow-keygen = heflow.cli.keygen:command',
