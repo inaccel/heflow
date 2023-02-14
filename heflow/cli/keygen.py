@@ -46,7 +46,7 @@ def jsondict(ctx, param, value):
 @click.pass_context
 def command(ctx, f, o, t, y, q):
     """
-    heflow-keygen [-b bits] [-f output_keyfile] [-O option] [-t ckks]
+    heflow-keygen [-q] [-f output_keyfile] [-O option] [-t ckks]
 
     heflow-keygen -y [-f input_keyfile]
     """
