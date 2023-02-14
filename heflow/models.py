@@ -7,7 +7,47 @@ import mlserver.grpc.converters
 import mlserver.grpc.dataplane_pb2_grpc
 
 
-def ckks_model(infer: str):
+@functools.singledispatch
+def ckks_model(function):
+
+    @functools.wraps(function)
+    def stub(*args, **kwargs):
+        if not hasattr(stub, 'channel'):
+            return function(*args, **kwargs)
+
+        signature = inspect.signature(function).bind(*args, **kwargs)
+        signature.apply_defaults()
+
+        return heflow.codecs.CKKSTensorRequestCodec.decode_response(
+            mlserver.grpc.converters.ModelInferResponseConverter.to_types(
+                mlserver.grpc.dataplane_pb2_grpc.GRPCInferenceServiceStub(
+                    stub.channel).ModelInfer(
+                        mlserver.grpc.converters.ModelInferRequestConverter.
+                        from_types(heflow.codecs.CKKSTensorRequestCodec.
+                                   encode_request(signature.args),
+                                   model_name=mlflow.pyfunc.mlserver.
+                                   MLServerDefaultModelName))))
+
+    def connect(channel):
+        setattr(stub, 'channel', channel)
+        return stub
+
+    setattr(stub, 'connect', connect)
+
+    def disconnect():
+        if hasattr(stub, 'channel'):
+            delattr(stub, 'channel')
+        return stub
+
+    setattr(stub, 'disconnect', disconnect)
+
+    setattr(stub, '__infer__', function)
+
+    return stub
+
+
+@ckks_model.register
+def _(infer: str):
 
     def decorate(cls):
         setattr(cls, '__infer__', getattr(cls, infer))
