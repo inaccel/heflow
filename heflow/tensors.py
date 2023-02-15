@@ -1,3 +1,4 @@
+import functools
 import joblib
 import numpy
 import os
@@ -11,8 +12,13 @@ class CKKSTensor:
     def __getstate__(self):
         return {'data': self.backend.serialize()}
 
+    @functools.singledispatchmethod
     def __init__(self, data):
         self.backend = tenseal.ckks_tensor(self.context, data)
+
+    @__init__.register
+    def _(self, backend: tenseal.CKKSTensor):
+        self.backend = backend
 
     def __setstate__(self, state):
         self.backend = tenseal.ckks_tensor_from(self.context, state['data'])
