@@ -1,0 +1,7 @@
+#!/bin/sh
+
+mkdir -p ~/.heflow
+
+heflow-keygen -f ~/.heflow/id_ckks -t ckks
+
+HEFLOW_CKKS=~/.heflow/id_ckks exec "$@"
