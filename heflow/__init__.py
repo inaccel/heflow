@@ -5,7 +5,10 @@ def load_model(model_uri: str):
     return mlflow.pyfunc.load_model(model_uri).unwrap_python_model().unwrap()
 
 
-def log_model(model):
+def log_model(model,
+              *,
+              registered_model_name=None,
+              await_registration_for=300):
 
     class PythonModel(mlflow.pyfunc.PythonModel):
 
@@ -21,7 +24,11 @@ def log_model(model):
         def unwrap(self):
             return self.model
 
-    return mlflow.pyfunc.log_model('model', python_model=PythonModel(model))
+    return mlflow.pyfunc.log_model(
+        'model',
+        python_model=PythonModel(model),
+        registered_model_name=registered_model_name,
+        await_registration_for=await_registration_for)
 
 
 def save_model(path, model):
