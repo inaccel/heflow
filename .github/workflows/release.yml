@@ -33,6 +33,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         build-args: VERSION=${{ github.event.inputs.version }}
+        file: docker/Dockerfile
         labels: ${{ steps.meta.outputs.labels }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
