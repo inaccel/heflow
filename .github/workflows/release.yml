@@ -1,16 +1,20 @@
 name: Release
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: VERSION
-        required: true
+  push:
+    tags:
+    - v*.*.*
 jobs:
   pipeline:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.x
+    - name: Create source & (binary) wheel distributions
+      run: pipx run build
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
     - name: Login to DockerHub
@@ -22,21 +26,24 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        flavor: latest=true
         images: inaccel/heflow
         labels: |
           org.opencontainers.image.authors=InAccel <info@inaccel.com>
           org.opencontainers.image.url=https://inaccel.com
           org.opencontainers.image.vendor=InAccel
-        tags: ${{ github.event.inputs.version }}
+        tags: type=semver,pattern={{version}}
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
-        build-args: VERSION=${{ github.event.inputs.version }}
+        context: .
         file: docker/Dockerfile
         labels: ${{ steps.meta.outputs.labels }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
+    - name: Publish distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI }}
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
