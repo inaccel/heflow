@@ -41,6 +41,9 @@ setup(
         'console_scripts': [
             'heflow-keygen = heflow.cli.keygen:command',
         ],
+        'mlflow.run_context_provider': [
+            'heflow-ckks = heflow.contexts:ckks_context',
+        ],
     },
     python_requires='>=3.8',
 )
