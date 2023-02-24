@@ -1,8 +1,8 @@
 import click
+import heflow.keys
 import joblib
 import json
 import pathlib
-import tenseal
 
 
 def jsondict(ctx, param, value):
@@ -18,10 +18,23 @@ def jsondict(ctx, param, value):
 
 
 @click.command(options_metavar='[options] — HEflow authentication key utility')
+@click.option(
+    '-E',
+    help=
+    'Specifies the hash algorithm used when displaying key fingerprints.  Valid options are: "md5" and "sha256".  The default is "sha256".',
+    default='sha256',
+    metavar='fingerprint_hash')
 @click.option('-f',
               help='Specifies the filename of the key file.',
               type=pathlib.Path,
               metavar='filename')
+@click.option(
+    '-l',
+    is_flag=True,
+    help=
+    'Show fingerprint of specified public key file.  For CKKS keys heflow-keygen tries to find the matching public key file and prints its fingerprint.',
+    default=False,
+    metavar='')
 @click.option(
     '-O',
     multiple=True,
@@ -44,37 +57,72 @@ def jsondict(ctx, param, value):
     metavar='')
 @click.option('-q', help='Silence heflow-keygen.', default=False, metavar='')
 @click.pass_context
-def command(ctx, f, o, t, y, q):
+def command(ctx, e, f, l, o, t, y, q):
     """
     heflow-keygen [-q] [-f output_keyfile] [-O option] [-t ckks]
 
     heflow-keygen -y [-f input_keyfile]
+
+    heflow-keygen -l [-E fingerprint_hash] [-f input_keyfile]
     """
-    if y:
+    if l:
         if not f:
+            if t not in ['ckks']:
+                click.echo('bad key type', err=True)
+                ctx.exit(255)
             f = click.prompt('Enter file in which the key is',
-                             'id_ckks',
+                             f'id_{t}',
                              type=click.Path(path_type=pathlib.Path))
         try:
-            context = tenseal.context_from(
-                joblib.load(click.open_file(f, 'rb')))
+            key = joblib.load(click.open_file(f, 'rb'))
         except OSError as ose:
             click.echo(f'{f}: {ose.strerror}', err=True)
             ctx.exit(255)
-        joblib.dump(context.serialize(), click.get_binary_stream('stdout'))
-    elif t == 'ckks':
+        except Exception:
+            click.echo(f'{f} is not a public key file.', err=True)
+            ctx.exit(255)
+        if isinstance(key, heflow.keys.CKKSKey):
+            try:
+                click.echo(f'{key.fingerprint(e)} (CKKS)')
+            except ValueError:
+                click.echo(f'Invalid hash algorithm "{e}"', err=True)
+                ctx.exit(255)
+        else:
+            click.echo(f'{f} is not a public key file.', err=True)
+            ctx.exit(255)
+    elif y:
+        if not f:
+            if t not in ['ckks']:
+                click.echo('bad key type', err=True)
+                ctx.exit(255)
+            f = click.prompt('Enter file in which the key is',
+                             f'id_{t}',
+                             type=click.Path(path_type=pathlib.Path))
+        try:
+            key = joblib.load(click.open_file(f, 'rb')).public_key()
+        except OSError as ose:
+            click.echo(f'{f}: {ose.strerror}', err=True)
+            ctx.exit(255)
+        except Exception:
+            click.echo(f'Load key "{f}": error in heflow', err=True)
+            ctx.exit(255)
+        joblib.dump(key, click.get_binary_stream('stdout'))
+    else:
+        if t not in ['ckks']:
+            click.echo(f'unknown key type {t}', err=True)
+            ctx.exit(255)
+
         if not q:
             click.echo(f'Generating public/private {t} key pair.')
-        context = tenseal.context(tenseal.SCHEME_TYPE.CKKS,
-                                  o.get('poly_modulus_degree', 16384),
-                                  coeff_mod_bit_sizes=o.get(
-                                      'coeff_modulus_bit_sizes',
-                                      [52, 52, 52, 52, 52, 52, 52]))
-        context.global_scale = 2**o.get('scale_bit_size', 52)
-        context.generate_galois_keys()
+        if t == 'ckks':
+            key = heflow.keys.ckks_key(
+                coeff_modulus_bit_sizes=o.get('coeff_modulus_bit_sizes',
+                                              [52, 52, 52, 52, 52, 52, 52]),
+                poly_modulus_degree=o.get('poly_modulus_degree', 16384),
+                scale_bit_size=o.get('scale_bit_size', 52))
         if not f:
             f = click.prompt('Enter file in which to save the key',
-                             'id_ckks',
+                             f'id_{t}',
                              type=click.Path(path_type=pathlib.Path))
         if f.exists():
             click.echo(f'{f} already exists.')
@@ -83,22 +131,26 @@ def command(ctx, f, o, t, y, q):
                     show_default=False) != 'y':
                 ctx.exit(1)
         try:
-            joblib.dump(context.serialize(save_secret_key=True), f)
+            joblib.dump(key, f)
         except OSError as ose:
             click.echo(f'Saving key "{f}" failed: {ose.strerror}', err=True)
             ctx.exit(255)
         if not q:
             click.echo(f'Your identification has been saved in {f}')
         try:
-            joblib.dump(context.serialize(), f'{f}.pub')
+            joblib.dump(key.public_key(), f'{f}.pub')
         except OSError as ose:
             click.echo(f'Unable to save public key to {f}.pub: {ose.strerror}',
                        err=True)
             ctx.exit(255)
         if not q:
             click.echo(f'Your public key has been saved in {f}.pub')
-    else:
-        click.echo(f'unknown key type {t}', err=True)
+            click.echo('The key fingerprint is:')
+            try:
+                click.echo(key.fingerprint(e))
+            except ValueError:
+                click.echo(f'Invalid hash algorithm "{e}"', err=True)
+                ctx.exit(255)
 
 
 if __name__ == '__main__':
