@@ -1,2 +1,3 @@
 mlflow[extras]
+psycopg2
 tenseal
