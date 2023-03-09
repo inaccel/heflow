@@ -17,7 +17,7 @@ def jsondict(ctx, param, value):
     return d
 
 
-@click.command(options_metavar='[options] — HEflow authentication key utility')
+@click.command(options_metavar='[options] — HEflow computation key utility')
 @click.option(
     '-E',
     help=
@@ -33,7 +33,6 @@ def jsondict(ctx, param, value):
     is_flag=True,
     help=
     'Show fingerprint of specified public key file.  For CKKS keys heflow-keygen tries to find the matching public key file and prints its fingerprint.',
-    default=False,
     metavar='')
 @click.option(
     '-O',
@@ -42,6 +41,7 @@ def jsondict(ctx, param, value):
     'Specify a key/value option.  These are specific to the operation that heflow-keygen has been requested to perform.  The -O option may be specified multiple times.',
     callback=jsondict,
     metavar='option')
+@click.option('-q', is_flag=True, help='Silence heflow-keygen.', metavar='')
 @click.option(
     '-t',
     help=
@@ -53,11 +53,9 @@ def jsondict(ctx, param, value):
     is_flag=True,
     help=
     'This option will read a private HEflow format file and print an HEflow public key to stdout.',
-    default=False,
     metavar='')
-@click.option('-q', help='Silence heflow-keygen.', default=False, metavar='')
 @click.pass_context
-def command(ctx, e, f, l, o, t, y, q):
+def command(ctx, e, f, l, o, q, t, y):
     """
     heflow-keygen [-q] [-f output_keyfile] [-O option] [-t ckks]
 

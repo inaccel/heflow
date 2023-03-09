@@ -26,6 +26,7 @@ class CKKSKey:
     def __setstate__(self, state):
         self.backend = tenseal.context_from(state['data'])
 
+    @functools.lru_cache
     def fingerprint(self, hash='sha256'):
         if hash == 'md5':
             hexdigest = hashlib.md5(

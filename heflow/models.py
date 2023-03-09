@@ -1,7 +1,6 @@
 import functools
 import heflow.codecs
 import inspect
-import mlflow.pyfunc
 import mlflow.pyfunc.mlserver
 import mlserver.grpc.converters
 import mlserver.grpc.dataplane_pb2_grpc
