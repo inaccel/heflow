@@ -35,6 +35,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
+        build-args: VERSION=${{ steps.meta.outputs.version }}
         context: .
         file: docker/Dockerfile
         labels: ${{ steps.meta.outputs.labels }}

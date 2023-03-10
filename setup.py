@@ -45,5 +45,10 @@ setup(
             'heflow-ckks = heflow.contexts:ckks_context',
         ],
     },
+    extras_require={
+        'extras': [
+            'psycopg2',
+        ],
+    },
     python_requires='>=3.8',
 )
