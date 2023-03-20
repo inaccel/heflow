@@ -42,7 +42,7 @@ setup(
             'heflow-keygen = heflow.cli.keygen:command',
         ],
         'mlflow.run_context_provider': [
-            'heflow-ckks = heflow.contexts:ckks_context',
+            'heflow-ckks = heflow.plugins.contexts:ckks_context',
         ],
     },
     extras_require={
