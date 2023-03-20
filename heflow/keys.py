@@ -37,7 +37,7 @@ class CKKSKey:
                 for hex in range(0,
                                  len(hexdigest) - 1, 2)
             ])
-        return hash.upper() + ':' + base64.b64encode(
+        return hash.upper() + ':' + base64.urlsafe_b64encode(
             hashlib.new(
                 hash,
                 self.backend.serialize(
