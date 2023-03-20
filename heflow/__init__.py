@@ -1,4 +1,4 @@
-import mlflow.pyfunc
+import mlflow
 
 
 def load_model(model_uri: str):

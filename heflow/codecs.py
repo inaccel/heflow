@@ -1,7 +1,5 @@
 import heflow.tensors
-import mlserver.codecs
-import mlserver.codecs.utils
-import mlserver.types
+import mlserver
 import pickle
 import typing
 
