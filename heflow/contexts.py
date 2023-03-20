@@ -1,7 +1,7 @@
 from mlflow.tracking.context.abstract_context import RunContextProvider
 
 import functools
-import joblib
+import heflow
 import os
 
 
@@ -16,7 +16,7 @@ class CKKSContext(RunContextProvider):
 
     @functools.lru_cache
     def key(self):
-        return joblib.load(os.getenv('HEFLOW_CKKS', 'id_ckks'))
+        return heflow.load_key(os.getenv('HEFLOW_CKKS', 'id_ckks'))
 
     def tags(self):
         return {'heflow.ckks_key.fingerprint': self.key().fingerprint()}

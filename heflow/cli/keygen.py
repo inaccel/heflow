@@ -1,6 +1,6 @@
 import click
+import heflow
 import heflow.keys
-import joblib
 import json
 import pathlib
 
@@ -72,7 +72,7 @@ def command(ctx, e, f, l, o, q, t, y):
                              f'id_{t}',
                              type=click.Path(path_type=pathlib.Path))
         try:
-            key = joblib.load(click.open_file(f, 'rb'))
+            key = heflow.load_key(click.open_file(f, 'rb'))
         except OSError as ose:
             click.echo(f'{f}: {ose.strerror}', err=True)
             ctx.exit(255)
@@ -97,14 +97,14 @@ def command(ctx, e, f, l, o, q, t, y):
                              f'id_{t}',
                              type=click.Path(path_type=pathlib.Path))
         try:
-            key = joblib.load(click.open_file(f, 'rb')).public_key()
+            key = heflow.load_key(click.open_file(f, 'rb')).public_key()
         except OSError as ose:
             click.echo(f'{f}: {ose.strerror}', err=True)
             ctx.exit(255)
         except Exception:
             click.echo(f'Load key "{f}": error in heflow', err=True)
             ctx.exit(255)
-        joblib.dump(key, click.get_binary_stream('stdout'))
+        heflow.save_key(click.get_binary_stream('stdout'), key)
     else:
         if t not in ['ckks']:
             click.echo(f'unknown key type {t}', err=True)
@@ -129,14 +129,14 @@ def command(ctx, e, f, l, o, q, t, y):
                     show_default=False) != 'y':
                 ctx.exit(1)
         try:
-            joblib.dump(key, f)
+            heflow.save_key(f, key)
         except OSError as ose:
             click.echo(f'Saving key "{f}" failed: {ose.strerror}', err=True)
             ctx.exit(255)
         if not q:
             click.echo(f'Your identification has been saved in {f}')
         try:
-            joblib.dump(key.public_key(), f'{f}.pub')
+            heflow.save_key(f'{f}.pub', key.public_key())
         except OSError as ose:
             click.echo(f'Unable to save public key to {f}.pub: {ose.strerror}',
                        err=True)

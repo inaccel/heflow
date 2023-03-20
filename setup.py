@@ -41,6 +41,9 @@ setup(
         'console_scripts': [
             'heflow-keygen = heflow.cli.keygen:command',
         ],
+        'mlflow.artifact_repository': [
+            'keys = heflow.plugins.keys:KeysRepository',
+        ],
         'mlflow.run_context_provider': [
             'heflow-ckks = heflow.plugins.contexts:ckks_context',
         ],

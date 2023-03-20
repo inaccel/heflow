@@ -1,7 +1,11 @@
+from mlflow.store.artifact.mlflow_artifacts_repo import MlflowArtifactsRepository
+
 import base64
 import functools
 import hashlib
+import mlflow
 import tenseal
+import urllib.parse
 
 
 class CKKSKey:
@@ -55,6 +59,17 @@ class CKKSKey:
         backend = self.backend.copy()
         backend.make_context_public()
         return CKKSKey(backend)
+
+
+class KeysRepository(MlflowArtifactsRepository):
+
+    def __init__(self, artifact_uri):
+        keys_uri = urllib.parse.urlparse(artifact_uri)
+        if keys_uri.scheme != 'keys' or not keys_uri.path.startswith('/'):
+            raise mlflow.MlflowException(
+                f'Not a proper keys:/ URI: {artifact_uri}. Keys URIs must be of the form \'keys:/<key_fingerprint>\'.'
+            )
+        super().__init__(f'mlflow-artifacts:/keys{keys_uri.path}')
 
 
 def ckks_key(*,
