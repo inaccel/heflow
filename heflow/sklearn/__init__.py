@@ -12,13 +12,13 @@ def log_model(model,
             heflow.sklearn.linear_model.LogisticRegression(model),
             registered_model_name=registered_model_name,
             await_registration_for=await_registration_for)
-
-    raise TypeError(f'invalid model instance: {type(model)}')
+    else:
+        raise TypeError(f'invalid model instance: {type(model)}')
 
 
 def save_model(path, model):
     if isinstance(model, sklearn.linear_model.LogisticRegression):
-        return heflow.save_model(
+        heflow.save_model(
             path, heflow.sklearn.linear_model.LogisticRegression(model))
-
-    raise TypeError(f'invalid model instance: {type(model)}')
+    else:
+        raise TypeError(f'invalid model instance: {type(model)}')

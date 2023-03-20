@@ -1,5 +1,6 @@
 import click
 import heflow.sklearn
+import mlflow
 import mlflow.sklearn
 import sklearn.datasets
 import sklearn.linear_model

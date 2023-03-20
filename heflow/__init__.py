@@ -47,4 +47,4 @@ def save_model(path, model):
         def unwrap(self):
             return self.model
 
-    return mlflow.pyfunc.save_model(path, python_model=PythonModel(model))
+    mlflow.pyfunc.save_model(path, python_model=PythonModel(model))
