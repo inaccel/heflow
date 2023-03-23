@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "description": "A Privacy-Preserving Machine Learning Lifecycle Platform",
+  "properties": {
+    "heflow": {
+      "form": true,
+      "properties": {
+        "image": {
+          "description": "Container image name.",
+          "form": true,
+          "title": "image",
+          "type": "string"
+        },
+        "pullPolicy": {
+          "description": "Image pull policy.",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
+          "form": true,
+          "title": "pullPolicy",
+          "type": "string"
+        },
+        "resources": {
+          "description": "Compute resources required by this container.",
+          "title": "resources",
+          "type": "object"
+        },
+        "tag": {
+          "description": "Release version.",
+          "form": true,
+          "title": "tag",
+          "type": "string"
+        }
+      },
+      "required": [
+        "image",
+        "tag"
+      ],
+      "title": "heflow",
+      "type": "object"
+    },
+    "replicas": {
+      "description": "Number of desired pods.",
+      "exclusiveMinimum": 0,
+      "form": true,
+      "multipleOf" : 1,
+      "title": "replicas",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "heflow"
+  ],
+  "title": "HEflow",
+  "type": "object"
+}

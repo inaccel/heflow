@@ -1,0 +1,33 @@
+annotations:
+  artifacthub.io/images: |
+    - image: inaccel/heflow:latest
+      name: heflow
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Support
+      url: https://github.com/inaccel/heflow/issues
+  artifacthub.io/signKey: |
+    fingerprint: 468AFD97D42F5E3CD2D58F0B49854F08ECA79B4E
+    url: https://keybase.io/inaccel/pgp_keys.asc
+apiVersion: v2
+dependencies:
+- name: minio
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.2.1
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.2.6
+description: A Privacy-Preserving Machine Learning Lifecycle Platform
+home: https://inaccel.com
+icon: https://gravatar.com/avatar/86a385a9d4ca0ccdfb2ed637cf9f3308
+keywords:
+- homomorphic-encryption
+- privacy-preserving-machine-learning
+maintainers:
+- email: info@inaccel.com
+  name: InAccel
+name: heflow
+sources:
+- https://github.com/inaccel/heflow
+type: application
+version: 1.0.0

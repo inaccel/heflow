@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "labels" $ | nindent 4 }}
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  {{- if $.Values.replicas }}
+  replicas: {{ $.Values.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      kind: Deployment
+      {{- include "selectorLabels" $ | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: heflow
+      labels:
+        kind: Deployment
+        {{- include "labels" $ | nindent 8 }}
+    spec:
+      containers:
+      - command:
+        - mlflow
+        - ui
+        - --artifacts-destination=s3://{{ $.Values.minio.defaultBuckets }}
+        - --backend-store-uri=postgresql://{{ $.Release.Name }}-postgresql.{{ $.Release.Namespace }}.svc.{{ $.Values.postgresql.clusterDomain }}:{{ default $.Values.postgresql.primary.service.ports.postgresql $.Values.postgresql.global.postgresql.service.ports.postgresql }}/{{ $.Values.postgresql.auth.database }}
+        - --gunicorn-opts=--timeout=0
+        - --host=0.0.0.0
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: root-user
+              name: {{ $.Release.Name }}
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: root-password
+              name: {{ $.Release.Name }}
+        - name: MLFLOW_S3_ENDPOINT_URL
+          value: http://{{ $.Release.Name }}-minio.{{ $.Release.Namespace }}.svc.{{ $.Values.minio.clusterDomain }}:{{ $.Values.minio.service.ports.api }}
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: root-password
+              name: {{ $.Release.Name }}
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              key: root-user
+              name: {{ $.Release.Name }}
+        image: {{ $.Values.heflow.image }}:{{ $.Values.heflow.tag }}
+        {{- if $.Values.heflow.pullPolicy }}
+        imagePullPolicy: {{ $.Values.heflow.pullPolicy }}
+        {{- end }}
+        name: heflow
+        {{- if $.Values.heflow.resources }}
+        resources:
+          {{- $.Values.heflow.resources | toYaml | nindent 10 }}
+        {{- end }}
+      hostAliases:
+      - hostnames:
+        - heflow
+        ip: 127.0.0.1
+      priorityClassName: system-cluster-critical
+      serviceAccountName: {{ $.Release.Name }}
