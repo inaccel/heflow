@@ -14,14 +14,10 @@ class CKKSContext(RunContextProvider):
             return False
         return True
 
+    @classmethod
     @functools.lru_cache
-    def key(self):
+    def key(cls):
         return heflow.load_key(os.getenv('HEFLOW_CKKS', 'id_ckks'))
 
     def tags(self):
         return {'heflow.ckks_key.fingerprint': self.key().fingerprint()}
-
-
-@functools.lru_cache
-def ckks_context():
-    return CKKSContext()

@@ -1,3 +1,3 @@
-def ckks_context(*args, **kwargs):
+def CKKSContext(*args, **kwargs):
     import heflow.contexts
-    return heflow.contexts.ckks_context(*args, **kwargs)
+    return heflow.contexts.CKKSContext(*args, **kwargs)

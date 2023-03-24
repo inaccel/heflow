@@ -5,22 +5,24 @@ import tenseal
 
 
 class CKKSTensor:
-    key = heflow.contexts.ckks_context().key()
 
     def __getstate__(self):
         return {'data': self.backend.serialize()}
 
     @functools.singledispatchmethod
     def __init__(self, data):
-        self.backend = tenseal.ckks_tensor(self.key.backend, data)
+        key = heflow.contexts.CKKSContext.key()
+
+        self.backend = tenseal.ckks_tensor(key.backend, data)
 
     @__init__.register
     def _(self, backend: tenseal.CKKSTensor):
         self.backend = backend
 
     def __setstate__(self, state):
-        self.backend = tenseal.ckks_tensor_from(self.key.backend,
-                                                state['data'])
+        key = heflow.contexts.CKKSContext.key()
+
+        self.backend = tenseal.ckks_tensor_from(key.backend, state['data'])
 
     def add(self, other):
         if isinstance(other, CKKSTensor):

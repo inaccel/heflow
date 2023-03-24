@@ -1,4 +1,3 @@
-import heflow
 import heflow.sklearn.linear_model
 import sklearn.linear_model
 

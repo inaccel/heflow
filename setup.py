@@ -45,7 +45,7 @@ setup(
             'keys = heflow.plugins.keys:KeysRepository',
         ],
         'mlflow.run_context_provider': [
-            'heflow-ckks = heflow.plugins.contexts:ckks_context',
+            'heflow-ckks = heflow.plugins.contexts:CKKSContext',
         ],
     },
     extras_require={

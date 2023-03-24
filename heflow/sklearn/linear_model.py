@@ -1,15 +1,14 @@
-import heflow.models
-import heflow.tensors
+import heflow
 import numpy
 
 
-@heflow.models.ckks_model('he_decision_function')
+@heflow.ckks_model('he_decision_function')
 class LogisticRegression:
 
     def __init__(self, model):
         self.classes_ = model.classes_
-        self.he_coef_ = heflow.tensors.ckks_tensor(model.coef_).transpose_()
-        self.he_intercept_ = heflow.tensors.ckks_tensor(model.intercept_)
+        self.he_coef_ = heflow.ckks_tensor(model.coef_).transpose_()
+        self.he_intercept_ = heflow.ckks_tensor(model.intercept_)
 
     def he_decision_function(self, he_X):
         he_scores = he_X.dot_(self.he_coef_).add_(self.he_intercept_)
@@ -17,7 +16,7 @@ class LogisticRegression:
             (he_scores.shape[0], )) if he_scores.shape[1] == 1 else he_scores
 
     def predict(self, X):
-        he_X = heflow.tensors.ckks_tensor(X)
+        he_X = heflow.ckks_tensor(X)
         he_scores = self.he_decision_function(he_X)
         scores = he_scores.numpy()
         if len(scores.shape) == 1:

@@ -3,7 +3,9 @@ from mlflow.store.artifact.mlflow_artifacts_repo import MlflowArtifactsRepositor
 import base64
 import functools
 import hashlib
+import joblib
 import mlflow
+import tempfile
 import tenseal
 import urllib.parse
 
@@ -78,3 +80,31 @@ def ckks_key(*,
              scale_bit_size=52):
     return CKKSKey(coeff_modulus_bit_sizes, poly_modulus_degree,
                    scale_bit_size)
+
+
+@functools.singledispatch
+def load_key(path):
+    return joblib.load(path)
+
+
+@load_key.register
+def _(key_uri: str):
+    with tempfile.TemporaryDirectory() as tmp:
+        return joblib.load(
+            mlflow.artifacts.download_artifacts(key_uri, dst_path=tmp))
+
+
+def log_key(key):
+    with tempfile.TemporaryDirectory() as tmp:
+        if isinstance(key, CKKSKey):
+            path = f'{tmp}/id_ckks.pub'
+        else:
+            raise mlflow.MlflowException(
+                f'`key` must be a subclass of `CKKSKey`. Instead, found an object of type: {type(key)}',
+                mlflow.exceptions.INVALID_PARAMETER_VALUE)
+        save_key(path, key.public_key())
+        KeysRepository(f'keys:/{key.fingerprint()}').log_artifact(path)
+
+
+def save_key(path, key):
+    joblib.dump(key, path)
