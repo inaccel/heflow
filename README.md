@@ -11,7 +11,7 @@ machine learning application or library (scikit-learn, Keras, TensorFlow,
 PyTorch, etc), wherever you currently run ML code (e.g. in notebooks, standalone
 applications, or the cloud).
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://gesis.mybinder.org/v2/gh/inaccel/heflow/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/inaccel/heflow/master)
 [![PyPI version](https://badge.fury.io/py/heflow.svg)](https://badge.fury.io/py/heflow)
 
 ## Homomorphic Encryption (HE)
