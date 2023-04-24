@@ -26,6 +26,7 @@ spec:
       - command:
         - mlflow
         - ui
+        - --app-name=heflow
         - --artifacts-destination=s3://{{ $.Values.minio.defaultBuckets }}
         - --backend-store-uri=postgresql://{{ $.Release.Name }}-postgresql.{{ $.Release.Namespace }}.svc.{{ $.Values.postgresql.clusterDomain }}:{{ default $.Values.postgresql.primary.service.ports.postgresql $.Values.postgresql.global.postgresql.service.ports.postgresql }}/{{ $.Values.postgresql.auth.database }}
         - --gunicorn-opts=--timeout=0
