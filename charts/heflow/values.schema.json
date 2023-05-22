@@ -41,6 +41,11 @@
       "title": "heflow",
       "type": "object"
     },
+    "nodeSelector": {
+      "description": "Selector which must match a node's labels for a pod to be scheduled on that node.",
+      "title": "nodeSelector",
+      "type": "object"
+    },
     "replicas": {
       "description": "Number of desired pods.",
       "exclusiveMinimum": 0,

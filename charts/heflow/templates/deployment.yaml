@@ -67,5 +67,9 @@ spec:
       - hostnames:
         - heflow
         ip: 127.0.0.1
+      {{- if $.Values.nodeSelector }}
+      nodeSelector:
+        {{- $.Values.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
       priorityClassName: system-cluster-critical
       serviceAccountName: {{ $.Release.Name }}

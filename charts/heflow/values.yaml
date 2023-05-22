@@ -9,6 +9,8 @@ minio:
     existingSecret: "{{ $.Release.Name }}"
   defaultBuckets: heflow
 
+# nodeSelector: ...
+
 postgresql:
   auth:
     database: heflow

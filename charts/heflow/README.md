@@ -31,13 +31,14 @@ deletes the release.
 The following table lists the configurable parameters of the HEflow chart and
 their default values.
 
-| Parameter           | Description                                   | Default          |
-| ------------------- | --------------------------------------------- | ---------------- |
-| `heflow.image`      | Container image name.                         | `inaccel/heflow` |
-| `heflow.pullPolicy` | Image pull policy.                            |                  |
-| `heflow.resources`  | Compute resources required by this container. |                  |
-| `heflow.tag`        | Release version.                              | `latest`         |
-| `replicas`          | Number of desired pods.                       |                  |
+| Parameter           | Description                                                                       | Default          |
+| ------------------- | --------------------------------------------------------------------------------- | ---------------- |
+| `heflow.image`      | Container image name.                                                             | `inaccel/heflow` |
+| `heflow.pullPolicy` | Image pull policy.                                                                |                  |
+| `heflow.resources`  | Compute resources required by this container.                                     |                  |
+| `heflow.tag`        | Release version.                                                                  | `latest`         |
+| `nodeSelector`      | Selector which must match a node's labels for a pod to be scheduled on that node. |                  |
+| `replicas`          | Number of desired pods.                                                           |                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
