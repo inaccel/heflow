@@ -161,5 +161,21 @@ class CKKSTensor:
         return self
 
 
+@functools.singledispatch
+def as_ckks_tensor(data):
+    return CKKSTensor(data)
+
+
+@as_ckks_tensor.register
+def _(tensor: CKKSTensor):
+    return tensor
+
+
+@functools.singledispatch
 def ckks_tensor(data):
     return CKKSTensor(data)
+
+
+@ckks_tensor.register
+def _(tensor: CKKSTensor):
+    return tensor.clone()

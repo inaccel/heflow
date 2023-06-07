@@ -16,7 +16,7 @@ class LogisticRegression:
             (he_scores.shape[0], )) if he_scores.shape[1] == 1 else he_scores
 
     def predict(self, X):
-        he_X = heflow.ckks_tensor(X)
+        he_X = heflow.as_ckks_tensor(X)
         he_scores = self.he_decision_function(he_X)
         scores = he_scores.numpy()
         if len(scores.shape) == 1:
