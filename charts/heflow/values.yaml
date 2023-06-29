@@ -8,6 +8,9 @@ minio:
   auth:
     existingSecret: "{{ $.Release.Name }}"
   defaultBuckets: heflow
+  persistence:
+    annotations:
+      helm.sh/resource-policy: keep
 
 # nodeSelector: ...
 
